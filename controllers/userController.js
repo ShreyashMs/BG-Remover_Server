@@ -23,6 +23,7 @@ const clerkWebhooks = async (req, res) => {
           photo: data.image_url,
         };
         await userModel.create(userData);
+        console.log("Webhook received:", req.body);
         return res.status(201).json({});
       }
       case "user.updated": {
@@ -32,9 +33,15 @@ const clerkWebhooks = async (req, res) => {
           lastName: data.last_name,
           photo: data.image_url,
         };
-        const updatedUser = await userModel.findOneAndUpdate({ clerkId: data.id }, userData, { new: true });
+        const updatedUser = await userModel.findOneAndUpdate(
+          { clerkId: data.id },
+          userData,
+          { new: true }
+        );
         if (!updatedUser) {
-          return res.status(404).json({ success: false, message: "User not found" });
+          return res
+            .status(404)
+            .json({ success: false, message: "User not found" });
         }
         return res.json({});
       }
@@ -43,7 +50,9 @@ const clerkWebhooks = async (req, res) => {
         return res.json({});
       }
       default:
-        return res.status(400).json({ success: false, message: "Unknown event type" });
+        return res
+          .status(400)
+          .json({ success: false, message: "Unknown event type" });
     }
   } catch (error) {
     console.log(error.message);

@@ -8,9 +8,10 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 await connectDB();
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 app.get("/", (req, res) => res.send(`API WORKING !!!`));
-app.use('/api/user',userRouter)
+app.use("/api/user", userRouter);
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
