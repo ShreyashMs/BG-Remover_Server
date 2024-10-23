@@ -5,7 +5,7 @@ import userModel from "../models/userModel.js";
 const clerkWebhooks = async (req, res) => {
   try {
     const whook = new Webhook(process.env.CLERK_WEBHOOKS_SECRET);
-    
+
     await whook.verify(JSON.stringify(req.body), {
       "svix-id": req.headers["svix-id"],
       "svix-timestamp": req.headers["svix-timestamp"],
@@ -23,6 +23,7 @@ const clerkWebhooks = async (req, res) => {
           lastName: data.last_name,
           photo: data.image_url,
         };
+
         await userModel.create(userData);
         res.json({});
         break;
@@ -34,16 +35,18 @@ const clerkWebhooks = async (req, res) => {
           lastName: data.last_name,
           photo: data.image_url,
         };
+
         await userModel.findOneAndUpdate({ clerkId: data.id }, userData);
         res.json({});
-
         break;
       }
+
       case "user.deleted": {
         await userModel.findOneAndDelete({ clerkId: data.id });
-        return res.json({});
+        res.json({});
         break;
       }
+
       default:
         break;
     }
